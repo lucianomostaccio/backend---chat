@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const ProductManager = require("../services/ProductManager");
-const productManager = new ProductManager();
+import { Router } from "express";
+const router = Router();
+import UsersManager from "../services/UsersManager.js";
+const usersManager = new UsersManager();
 
 // Rutas para manejo de productos
 
@@ -10,7 +10,7 @@ const productManager = new ProductManager();
 router.get("/", async (req, res) => {
   try {
     const limit = Number(req.query.limit);
-    const products = await productManager.getProducts();
+    const products = await usersManager.getProducts();
     if (!isNaN(limit)) {
       res.json(products.slice(0, limit));
     } else {
@@ -27,7 +27,7 @@ router.get("/:pid", async (req, res) => {
   try {
     const productId = Number(req.params.pid);
     console.log("id de producto ingresada:", productId);
-    const product = await productManager.getProductById(productId);
+    const product = await usersManager.getProductById(productId);
 
     if (product) {
       res.json(product);
@@ -44,7 +44,7 @@ router.get("/:pid", async (req, res) => {
 router.post("/", async (req, res) => {
   const productData = req.body;
   try {
-    await productManager.addProduct(productData);
+    await usersManager.addProduct(productData);
     res.status(201).json({ message: "Pedido de agregado exitoso" });
     console.log("producto agregado:", productData);
   } catch (error) {
@@ -59,7 +59,7 @@ router.put("/:pid", async (req, res) => {
   console.log("id de producto ingresada:", productId);
   const updatedProduct = req.body;
   console.log("nuevos campos", updatedProduct);
-  productManager.updateProduct(productId, updatedProduct);
+  usersManager.updateProduct(productId, updatedProduct);
   res.json({
     message:
       "Pedido exitoso, producto deberia haberse actualizado exitosamente",
@@ -69,10 +69,10 @@ router.put("/:pid", async (req, res) => {
 // Eliminar un producto por ID
 router.delete("/:pid", async (req, res) => {
   const productId = Number(req.params.pid);
-  productManager.deleteProduct(productId);
+  usersManager.deleteProduct(productId);
   res.json({
     message: "Pedido exitoso, debería haberse eliminado el producto",
   });
 });
 
-module.exports = router;
+export default router;

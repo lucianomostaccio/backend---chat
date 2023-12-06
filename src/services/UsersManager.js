@@ -1,9 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+import { promises } from "fs";
+import { join } from "path";
+import __dirname from "../utilities/utils.js"
 
-const filePath = path.join(__dirname, "../../db/products.json");
+const filePath = join(__dirname, "../../db/users.json");
 
-class ProductManager {
+class usersManager {
   constructor() {
     this.path = filePath;
     this.loadProductsFromFile();
@@ -13,7 +14,7 @@ class ProductManager {
   //cargar productos desde el json
   async loadProductsFromFile() {
     try {
-      const data = await fs.promises.readFile(this.path, "utf8");
+      const data = await promises.readFile(this.path, "utf8");
       this.products = JSON.parse(data);
       // console.log("Productos leídos desde el json:", this.products);
       const lastProduct = this.products[this.products.length - 1];
@@ -28,7 +29,7 @@ class ProductManager {
   async saveProductsToFile() {
     try {
       const data = JSON.stringify(this.products, null, 2);
-      await fs.promises.writeFile(this.path, data, "utf8");
+      await promises.writeFile(this.path, data, "utf8");
       console.log("Productos guardados en el archivo correctamente.");
     } catch (err) {
       console.error("Error al guardar los productos en el archivo:", err);
@@ -54,7 +55,9 @@ class ProductManager {
     } = productData;
 
     if (!title && !description && !code && !price && !stock && !category) {
-      console.error("Al menos un campo es obligatorio: title, description, code, price, stock, o category.");
+      console.error(
+        "Al menos un campo es obligatorio: title, description, code, price, stock, o category."
+      );
       return;
     }
 
@@ -118,4 +121,4 @@ class ProductManager {
   }
 }
 
-module.exports = ProductManager;
+export default usersManager;

@@ -1,11 +1,12 @@
 // server //
-const express = require("express");
-const path = require("path");
-const handlebars = require("express-handlebars");
-const { Server } = require("socket.io");
-const viewsRouter = require("./routers/views.router.js");
-const apiRouter = require("./routers/api.router.js");
-const onConnection = require("./controllers/socket.controller.js")
+import express, { json, urlencoded } from "express";
+import __dirname from "./utilities/utils.js"
+import { join } from "path";
+import handlebars from "express-handlebars";
+import { Server } from "socket.io";
+import viewsRouter from "./routers/views.router.js";
+import apiRouter from "./routers/api.router.js";
+import onConnection from "./controllers/socket.controller.js";
 
 // initialize server
 const app = express();
@@ -15,18 +16,18 @@ const server = app.listen(port, () => {
 }); 
 
 // sockets server
-const websocketServer = new Server(server); 
-websocketServer.on('connection', onConnection(websocketServer));
+const io = new Server(server); 
+// io.on('connection', onConnection(io));
 
 // handlebars engine & templates:
 app.engine("handlebars", handlebars.engine());
-app.set("views", path.join(__dirname, "views"));
+app.set("views", join(__dirname, "views"));
 app.set("view engine", "handlebars");
 
 // middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "static"))); //specify static folder
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use(express.static(join(__dirname, "static"))); //specify static folder
 
 // routers
 app.use("/", viewsRouter);
